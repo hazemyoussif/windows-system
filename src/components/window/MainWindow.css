@@ -1,0 +1,118 @@
+.App {
+  display: flex;
+}
+
+.main-window {
+  min-width: 23vw;
+  min-height: 40vh;
+  background: #efefef;
+}
+
+.window-control {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background: #d7d3d7;
+  cursor: move;
+}
+
+.window-cloner {
+  display: flex;
+  flex-grow: 0;
+}
+
+.window-cloner-vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.window-cloner-container {
+  display: inline-block;
+}
+
+.right-control {
+  display: inline-flex;
+  align-items: center;
+}
+
+.right-margin {
+  margin-right: 5px;
+}
+
+.left-margin {
+  margin-left: 15px;
+}
+
+.cloner-btn {
+  font-size: 5px;
+  cursor: copy;
+}
+
+.type-btn {
+  cursor: help;
+}
+
+button {
+  background-color: #f0f7fd;
+  color: #6488a6;
+  border: 2px solid #6488a6;
+}
+button:hover {
+  background-color: #e5f1fc;
+  color: #5d83a3;
+  border: 2px solid #5d83a3;
+  box-shadow: #465a6d 1px 1px;
+}
+
+.project-explorer-container {
+  min-width: 17vw;
+  max-width: 17vw;
+  background-color: #252526;
+  height: 100vh;
+  color: white;
+}
+
+.explorer-li{
+  cursor: pointer;
+  padding: 5px 0px;
+}
+
+.explorer-li:hover {
+  background-color: #37373d;
+}
+
+ul {
+  list-style-type: none;
+ }
+
+ .container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.custom-context-menu {
+  position: fixed;
+  z-index: 10;
+  background: #252526;
+  box-shadow: 0 4px 8px rgba(85, 85, 85, 0.3);
+  border: 1px solid #d3d3d3 ;
+}
+
+.option {
+  cursor: pointer;
+  padding: 15px 30px;
+}
+
+.option:hover {
+  background: #37373d;
+}
+
+.client-name{
+  cursor: pointer;
+}

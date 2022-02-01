@@ -3,13 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/react-fontawesome": "^0.1.17",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "bpmn-js": "^8.9.1",
+    "bpmn-js-color-picker": "^0.4.0",
+    "bpmn-js-properties-panel": "^0.46.0",
+    "bpmn-moddle": "^7.1.2",
+    "bpmn-xml-parser": "^1.6.0",
+    "buffer": "^6.0.3",
+    "diagram-js-minimap": "^2.0.4",
+    "jquery": "^3.6.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
-    "web-vitals": "^2.1.4"
+    "timers": "^0.1.1",
+    "web-vitals": "^2.1.4",
+    "xml2js": "^0.4.23"
   },
   "scripts": {
     "start": "react-scripts start",
