@@ -3,7 +3,6 @@ import BPMNContainer from "./BPMNContainer";
 import FileImport from "./FileImport";
 import XMLParser from "react-xml-parser";
 import globalContext from "../../context/global-context";
-
 const PlatformContainer = (props) => {
   const url = "https://neotutum.nw.r.appspot.com/";
   const localGlobalContext = useContext(globalContext);
@@ -55,7 +54,7 @@ const PlatformContainer = (props) => {
       const response = await fetch(url + endPoint, {
         method: "post",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          "Content-Type": "application/json",
         },
         body: formdata,
       });
@@ -121,21 +120,27 @@ const PlatformContainer = (props) => {
       bpmnSequenceFlows: [],
       bpmnLanes: [],
     };
-  
+
     processArray.forEach((process) => {
-      fullObject.bpmnSequenceFlows.push(arrayFilter(process.children, "sequenceflow"));
+      fullObject.bpmnSequenceFlows.push(
+        arrayFilter(process.children, "sequenceflow")
+      );
       fullObject.bpmnLanes.push(arrayFilter(process.children, "lanes"));
-      fullObject.bpmnAssociations.push(arrayFilter(process.children, "associations"));
+      fullObject.bpmnAssociations.push(
+        arrayFilter(process.children, "associations")
+      );
       fullObject.bpmnEntities.push(arrayFilter(process.children, "tasks"));
       fullObject.bpmnEntities.push(arrayFilter(process.children, "event"));
+      fullObject.bpmnEntities.push(arrayFilter(process.children, "dataobject"));
+      fullObject.bpmnEntities.push(arrayFilter(process.children, "textannotation"));
     });
 
-    for(const [key, value] of Object.entries(fullObject)){
-      formData[key]=value.flat();
+    for (const [key, value] of Object.entries(fullObject)) {
+      formData[key] = value.length > 0 ? value.flat() : [];
     }
-    console.log(formData);
-
-    creatEntity('bpmnFile',xmlFormatter(formData));
+    console.log(formData, xmlFormatter(formData));
+    creatEntity("bpmnFile", JSON.stringify(formData));
+    // creatEntity("bpmnFile", formData);
   };
 
   const handleFileChosen = (file) => {
@@ -148,7 +153,6 @@ const PlatformContainer = (props) => {
     const filtered = jsonArray.filter((jsonItem) => {
       return jsonItem.name.toLowerCase().includes(filter);
     });
-
     return filtered;
   };
 

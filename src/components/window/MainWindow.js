@@ -10,7 +10,9 @@ const MainWindow = (props) => {
     return(
     <div className="main-window" style={{margin:`10px ${width}px 10px 10px`}}>
         <WindowControl rowID={props.rowID}/>
-        <div ref={localGlobalContext.BPMNRef}></div>
+        <div ref={localGlobalContext.BPMNRef}>
+            <div id="js-properties-panel"></div>
+        </div>
         <div ref={localGlobalContext.BPMNRefData}></div>
     </div>
     );
