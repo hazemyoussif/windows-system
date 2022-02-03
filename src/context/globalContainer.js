@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import globaContext from "./global-context";
 
 const GlobalContainer = (props) => {
@@ -6,7 +6,8 @@ const GlobalContainer = (props) => {
     { row: 1, windows: [{ id: 1, type: "General" }] },
   ]);
   
-
+  const BPMNRef = useRef(null);
+  const BPMNRefData = useRef(null);
   const [windowsOptions, setWindowsOptions] = useState({
     width: 10,
     height: 10,
@@ -23,7 +24,9 @@ const GlobalContainer = (props) => {
         windowsOptions,
         setWindowsOptions,
         globalPortfolios,
-        setGlobalPortfolios
+        setGlobalPortfolios,
+        BPMNRef,
+        BPMNRefData
       }}
     >
       {props.children}

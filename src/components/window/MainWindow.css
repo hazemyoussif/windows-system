@@ -116,3 +116,7 @@ ul {
 .client-name{
   cursor: pointer;
 }
+
+.hidden-element{
+  display: none;
+}

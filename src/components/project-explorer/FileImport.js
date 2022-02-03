@@ -37,7 +37,7 @@ let bpmn_file_main
 
       await parseString(xmlTarget, async (err, result) => {
         //Parse the XML string to JSON
-        // Send xmlTarget to BpmnFile endpoint;
+        // Send xmlTarget to BpmnFile endpoint; 
         // Get Associations from JSON result -> send to bpmnAssociations Endpoint with bpmnFile ID;
         // Get Entities from JSON result -> send to bpmnEntities Endpoint with bpmnFile ID;
         //Get SequenceFlows from JSON result -> send to bpmnSequenceFlows Endpoint with bpmnFile ID;
