@@ -25,6 +25,8 @@ const ProjectExplorer = (props) => {
       });
       if (response.ok) {
         const { data, msg } = await response.json();
+        console.log(typeof Object.values(data));
+        // console.log(typeof JSON.parse(data), JSON.parse(data));
         handleRetrieve(data);
         setMessage({ val: msg, type: "is-success" });
       }

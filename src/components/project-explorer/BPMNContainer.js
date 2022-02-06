@@ -1,54 +1,173 @@
-import BpmnModeler from "bpmn-js/lib/Modeler";
-import BpmnPalletteModule from "bpmn-js/lib/features/palette";
+
 import "bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css";
-import {
-  BpmnPropertiesPanelModule,
-  BpmnPropertiesProviderModule,
-} from "bpmn-js-properties-panel";
-import minimapModule from "diagram-js-minimap";
-import { is } from "bpmn-js/lib/util/ModelUtil";
-import BpmnColorPickerModule from "bpmn-js-color-picker";
-import { useRef, useEffect, useContext, useCallback } from "react";
+import { prepareBPMN } from "./PrepareBPMN";
+import { useContext, useState } from "react";
 import globalContext from "../../context/global-context";
 const BPMNContainer = (props) => {
+  const [isShown, setIsShown] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const container = useContext(globalContext).BPMNRef;
-  const xmlDataDiv = useContext(globalContext).BPMNRefData;
-  console.log(container);
-  const modelerConstructor = useCallback(async ()=>{
-    if (container) {
-      let current = container.current;
-      // const parser = new DOMParser();
-      //const modeler = new BpmnModeler({ current });
-      const modeler = new BpmnModeler({
-        container: current,
-        keyboard: { bindTo: document },
-        BpmnPalletteModule,
-        additionalModules: [
-          BpmnPropertiesPanelModule,
-          BpmnPropertiesProviderModule,
-          minimapModule,
-          BpmnColorPickerModule,
-        ],
-        propertiesPanel: {
-        parent: xmlDataDiv.current
-        }
-      });
-      await modeler.importXML(props.bpmnFile.fileData);
+  const setBpmnXML = useContext(globalContext).setBpmnXML;
+  const localGlobalContext= useContext(globalContext);
+  const [color,setColor] = useState('white');
+  const showContextMenu = (event) => {
+    event.preventDefault();
+
+    setIsShown(false);
+    const newPosition = {
+      x: event.pageX,
+      y: event.pageY,
+    };
+    setPosition(newPosition);
+    setIsShown(true);
+  };
+
+  const options = ["Commit","Change","Close","Archive"];
+  const hideContextMenu = (event) => {
+    event.preventDefault();
+    setIsShown(false);
+  };
+
+  const [selectedValue, setSelectedValue] = useState();
+  const contextAction = (selectedValue) => {
+    let statusType;
+    setSelectedValue(selectedValue);
+    setIsShown(false);
+    switch(selectedValue){
+      case "Commit":
+        statusType="commit";
+        // setColor('green');
+        break;
+        case "Change":
+          statusType="changed";
+        // setColor('orange');
+
+// creatEntity("bpmnFile", JSON.stringify(formData));
+        //console.log(formData);
+        break;
+        case "Close":
+          statusType="closed";
+        // setColor('DarkSlateGray');
+        break;
+        default:
+          deleteBpmn("https://neotutum.nw.r.appspot.com/bpmnFile/"+props.bpmnFile.id);
+
     }
-  },[container,props.bpmnFile.fileData,xmlDataDiv])
-  useEffect( () => {
-     modelerConstructor();
-  }, [modelerConstructor]);
+
+    
+    if(statusType==="commit" && localGlobalContext.bpmnUpdate===""){
+      updateBpmn("https://neotutum.nw.r.appspot.com/bpmnFile/"+localGlobalContext.bpmnXML.id,JSON.stringify({status:"commit"}));
+      return ;
+    }
+    const updatedContent = localGlobalContext.bpmnUpdate;
+    const fullObject = prepareBPMN(updatedContent,"string");
+     const formData = {
+      fileName: localGlobalContext.bpmnXML.fileName,
+      fileData: localGlobalContext.bpmnUpdate,
+      platformId: localGlobalContext.bpmnXML.platformId,
+      creatorId: 1,
+      status: statusType
+    };
+
+    for (const [key, value] of Object.entries(fullObject)) {
+      formData[key] = value.length > 0 ? value.flat() : [];
+    }
+    updateBpmn("https://neotutum.nw.r.appspot.com/bpmnFile/"+localGlobalContext.bpmnXML.id,JSON.stringify(formData));
+    
+  };
+
+  const updateBpmn = async (url,formdata) =>{
+    try {
+      const response = await fetch(url, {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: formdata,
+      });
+      console.log(response);
+      if (response.ok) {
+        const { data, msg } = await response.json();
+        console.log(data,msg);
+        try {
+          const response = await fetch(url + "portfolios", {
+            Methode: "get",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (response.ok) {
+            const { data, msg } = await response.json();
+          }
+        } catch (error) {
+          console.log(error);
+
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const deleteBpmn = async (url)=>{
+    try {
+      const response = await fetch(url, {
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response);
+      if (response.ok) {
+        const { data, msg } = await response.json();
+        console.log(data,msg);
+        try {
+          const response = await fetch(url + "portfolios", {
+            Methode: "get",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (response.ok) {
+            const { data, msg } = await response.json();
+          }
+        } catch (error) {
+          console.log(error);
+
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const handleBPMNClick = () => {
+    setBpmnXML(props.bpmnFile);
+    console.log(props.bpmnFile.fileData);
     // xmlDataDiv.current.innerText=props.bpmnFile.fileData;
   };
+  
   return (
     <div>
-      <ul style={{ listStyleType: "square" }} className="left-margin">
-        <li className="explorer-li" onClick={handleBPMNClick}>
+      <ul style={{ listStyleType: "square",color:color }} className="left-margin">
+        <li className="explorer-li" onContextMenu={showContextMenu} onClick={handleBPMNClick}>
           {props.bpmnFile.fileName}
         </li>
       </ul>
+      {isShown && (
+        <div
+          style={{ top: position.y, left: position.x }}
+          className="custom-context-menu"
+          onContextMenu={hideContextMenu}
+        >
+          {options.map((option) => {
+            return (
+              <div className="option" onClick={() => contextAction(option)}>
+                {option}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

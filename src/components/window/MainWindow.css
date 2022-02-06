@@ -3,9 +3,19 @@
 }
 
 .main-window {
-  min-width: 23vw;
-  min-height: 40vh;
+  min-width: 40vw;
+  min-height: 65vh;
   background: #efefef;
+}
+
+.main-window-expanded {
+  min-width: 99vw;
+  min-height: 99vh;
+  background: #efefef;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 10;
 }
 
 .window-control {
@@ -71,9 +81,10 @@ button:hover {
   background-color: #252526;
   height: 100vh;
   color: white;
+  overflow-y: scroll;
 }
 
-.explorer-li{
+.explorer-li {
   cursor: pointer;
   padding: 5px 0px;
 }
@@ -84,9 +95,9 @@ button:hover {
 
 ul {
   list-style-type: none;
- }
+}
 
- .container {
+.container {
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -101,7 +112,7 @@ ul {
   z-index: 10;
   background: #252526;
   box-shadow: 0 4px 8px rgba(85, 85, 85, 0.3);
-  border: 1px solid #d3d3d3 ;
+  border: 1px solid #d3d3d3;
 }
 
 .option {
@@ -113,10 +124,35 @@ ul {
   background: #37373d;
 }
 
-.client-name{
+.client-name {
   cursor: pointer;
 }
 
-.hidden-element{
+.hidden-element {
   display: none;
+}
+
+.bjs-powered-by {
+  display: none;
+}
+
+/* Scrollbar*/
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

@@ -20,7 +20,7 @@ const EntityCreator = (props) => {
       const response = await fetch(url + endPoint, {
         method: "post",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: formdata,
       });

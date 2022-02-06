@@ -3,6 +3,8 @@ import BPMNContainer from "./BPMNContainer";
 import FileImport from "./FileImport";
 import XMLParser from "react-xml-parser";
 import globalContext from "../../context/global-context";
+import BpmnSelector from "../BPMN/BpmnSelector";
+import { prepareBPMN } from "./PrepareBPMN";
 const PlatformContainer = (props) => {
   const url = "https://neotutum.nw.r.appspot.com/";
   const localGlobalContext = useContext(globalContext);
@@ -25,7 +27,7 @@ const PlatformContainer = (props) => {
     setIsShown(true);
   };
 
-  const options = ["Import BPMN File"];
+  const options = ["Import BPMN File","Create New BPMN File"];
   const hideContextMenu = (event) => {
     event.preventDefault();
     setIsShown(false);
@@ -34,10 +36,15 @@ const PlatformContainer = (props) => {
   const [selectedValue, setSelectedValue] = useState();
   const contextAction = (selectedValue) => {
     // fileInput.current.open();
-    console.log(fileInput.current.click());
-    setSelectedValue(selectedValue);
-    setIsShown(false);
-    setCollapse(false);
+    if(selectedValue==="Import BPMN File"){
+      console.log(fileInput.current.click());
+      setSelectedValue(selectedValue);
+      setIsShown(false);
+      setCollapse(false);
+    }else{
+
+    }
+    
   };
   const cancelCreator = (event) => {
     event.preventDefault();
@@ -111,34 +118,11 @@ const PlatformContainer = (props) => {
       platformId: props.platformData.id,
       creatorId: 1,
     };
-    const BPMNJson = new XMLParser().parseFromString(content);
-    console.log(BPMNJson);
-    const processArray = arrayFilter(BPMNJson.children, "process");
-    const fullObject = {
-      bpmnAssociations: [],
-      bpmnEntities: [],
-      bpmnSequenceFlows: [],
-      bpmnLanes: [],
-    };
-
-    processArray.forEach((process) => {
-      fullObject.bpmnSequenceFlows.push(
-        arrayFilter(process.children, "sequenceflow")
-      );
-      fullObject.bpmnLanes.push(arrayFilter(process.children, "lanes"));
-      fullObject.bpmnAssociations.push(
-        arrayFilter(process.children, "associations")
-      );
-      fullObject.bpmnEntities.push(arrayFilter(process.children, "tasks"));
-      fullObject.bpmnEntities.push(arrayFilter(process.children, "event"));
-      fullObject.bpmnEntities.push(arrayFilter(process.children, "dataobject"));
-      fullObject.bpmnEntities.push(arrayFilter(process.children, "textannotation"));
-    });
+    const fullObject = prepareBPMN(content);
 
     for (const [key, value] of Object.entries(fullObject)) {
       formData[key] = value.length > 0 ? value.flat() : [];
     }
-    console.log(formData, xmlFormatter(formData));
     creatEntity("bpmnFile", JSON.stringify(formData));
     // creatEntity("bpmnFile", formData);
   };
@@ -191,6 +175,7 @@ const PlatformContainer = (props) => {
           </div>
         )}
         {!collapse && bpmnFiles}
+        {!collapse && selectedValue==="Create New BPMN File" && <BpmnSelector />}
       </ul>
     </div>
   );
