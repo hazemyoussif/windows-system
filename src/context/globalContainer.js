@@ -3,11 +3,9 @@ import globaContext from "./global-context";
 
 const GlobalContainer = (props) => {
   const [rows, setRows] = useState([
-    { row: 1, windows: [{ id: 1, type: "General" }] },
+    { row: 1, windows: [{ id: 1, type: "BMPN File" }] },
   ]);
   const [bpmnXML, setBpmnXML] = useState("");
-  const BPMNRef = useRef(null);
-  const BPMNRefData = useRef(null);
   const [windowsOptions, setWindowsOptions] = useState({
     width: 10,
     height: 10,
@@ -27,8 +25,6 @@ const GlobalContainer = (props) => {
         setWindowsOptions,
         globalPortfolios,
         setGlobalPortfolios,
-        BPMNRef,
-        BPMNRefData,
         bpmnXML,
         setBpmnXML,
         bpmnUpdate,

@@ -5,8 +5,8 @@ import { event } from "jquery";
 const EntityCreator = (props) => {
   const localGlobalContext = useContext(globalContext);
   const [name, setName] = useState("");
-  const [show,setShow] = useState(true);
-  const [posting,setPosting] = useState(false);
+  const [show, setShow] = useState(true);
+  const [posting, setPosting] = useState(false);
   const handleNameChange = (event) => {
     const { value } = event.target;
     setName(value);
@@ -91,31 +91,60 @@ const EntityCreator = (props) => {
         };
         creatEntity("platforms", xmlFormatter(formData));
         break;
-        case "BPMN":
+      case "BPMN":
+        let definedName;
+        if (name.includes(".bpmn")) {
+          definedName = name;
+        } else {
+          definedName = name + ".bpmn";
+        }
         formData = {
-          name,
-          serviceChainId: props.parentId,
+          fileName: definedName,
+          platformId: props.parentId,
+          fileData: `<?xml version="1.0" encoding="UTF-8"?>
+          <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn">
+            <bpmn2:process id="Process_1" isExecutable="false">
+              <bpmn2:startEvent id="StartEvent_1"/>
+            </bpmn2:process>
+            <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+              <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+              </bpmndi:BPMNPlane>
+            </bpmndi:BPMNDiagram>
+          </bpmn2:definitions>`,
+          creatorId: 1,
+          bpmnAssociations: [],
+          bpmnSequenceFlows: [],
+          bpmnEntities: [],
+          bpmnLanes: [],
         };
-        
+        creatEntity("bpmnFile", xmlFormatter(formData));
         break;
-        default:
-          break;
+      default:
+        break;
     }
   };
 
-  const checkKey = (event) =>{
-    if(event.key === 'Enter') {
+  const checkKey = (event) => {
+    if (event.key === "Enter") {
       creatEntity();
-    }else if(event.key === 'Escape'){
-
+    } else if (event.key === "Escape") {
     }
-  }
+  };
   return (
-    show && <div style={{ display: "flex", paddingBottom: "15px" }}>
-      <label>{props.type}</label>
-      <input type="text" onChange={handleNameChange} disabled={posting} onKeyDown={checkKey}/>
-      <button onClick={handleEntityCreation} disabled={posting}>+</button>
-    </div>
+    show && (
+      <div style={{ display: "flex", paddingBottom: "15px" }}>
+        <label>{props.type}</label>
+        <input
+          type="text"
+          onChange={handleNameChange}
+          disabled={posting}
+          onKeyDown={checkKey}
+        />
+        <button onClick={handleEntityCreation} disabled={posting}>
+          +
+        </button>
+      </div>
+    )
   );
 };
 

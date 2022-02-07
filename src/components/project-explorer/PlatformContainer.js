@@ -5,6 +5,7 @@ import XMLParser from "react-xml-parser";
 import globalContext from "../../context/global-context";
 import BpmnSelector from "../BPMN/BpmnSelector";
 import { prepareBPMN } from "./PrepareBPMN";
+import EntityCreator from "./EntityCreator";
 const PlatformContainer = (props) => {
   const url = "https://neotutum.nw.r.appspot.com/";
   const localGlobalContext = useContext(globalContext);
@@ -27,7 +28,7 @@ const PlatformContainer = (props) => {
     setIsShown(true);
   };
 
-  const options = ["Import BPMN File","Create New BPMN File"];
+  const options = ["Import BPMN File", "Create New BPMN File"];
   const hideContextMenu = (event) => {
     event.preventDefault();
     setIsShown(false);
@@ -36,15 +37,13 @@ const PlatformContainer = (props) => {
   const [selectedValue, setSelectedValue] = useState();
   const contextAction = (selectedValue) => {
     // fileInput.current.open();
-    if(selectedValue==="Import BPMN File"){
-      console.log(fileInput.current.click());
-      setSelectedValue(selectedValue);
-      setIsShown(false);
-      setCollapse(false);
-    }else{
-
+    setSelectedValue(selectedValue);
+    setIsShown(false);
+    setCollapse(false);
+    if (selectedValue === "Import BPMN File") {
+      fileInput.current.click();
+    } else {
     }
-    
   };
   const cancelCreator = (event) => {
     event.preventDefault();
@@ -174,8 +173,12 @@ const PlatformContainer = (props) => {
             })}
           </div>
         )}
+        {selectedValue === "Create New BPMN File" ? (
+          <li onContextMenu={cancelCreator}>
+            <EntityCreator type="BPMN" parentId={props.platformData.id} />
+          </li>
+        ) : null}
         {!collapse && bpmnFiles}
-        {!collapse && selectedValue==="Create New BPMN File" && <BpmnSelector />}
       </ul>
     </div>
   );

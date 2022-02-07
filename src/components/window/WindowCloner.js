@@ -12,7 +12,7 @@ const WindowCloner = (props) => {
           row: row.row,
           windows: [
             ...row.windows,
-            { id: row.windows.length, type: "General" },
+            { id: row.windows.length+1, type: "General" },
           ],
         };
       } else {

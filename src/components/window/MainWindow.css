@@ -82,8 +82,14 @@ button:hover {
   height: 100vh;
   color: white;
   overflow-y: scroll;
+  position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 100000000000;
 }
-
+.djs-palette-entries{
+  z-index: -100000   !important;
+}
 .explorer-li {
   cursor: pointer;
   padding: 5px 0px;

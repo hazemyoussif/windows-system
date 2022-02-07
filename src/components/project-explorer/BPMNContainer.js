@@ -1,4 +1,3 @@
-
 import "bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css";
 import { prepareBPMN } from "./PrepareBPMN";
 import { useContext, useState } from "react";
@@ -8,8 +7,8 @@ const BPMNContainer = (props) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const container = useContext(globalContext).BPMNRef;
   const setBpmnXML = useContext(globalContext).setBpmnXML;
-  const localGlobalContext= useContext(globalContext);
-  const [color,setColor] = useState('white');
+  const localGlobalContext = useContext(globalContext);
+  const urlOriginal = "https://neotutum.nw.r.appspot.com/";
   const showContextMenu = (event) => {
     event.preventDefault();
 
@@ -22,7 +21,7 @@ const BPMNContainer = (props) => {
     setIsShown(true);
   };
 
-  const options = ["Commit","Change","Close","Archive"];
+  const options = ["Commit", "Change", "Close", "Archive"];
   const hideContextMenu = (event) => {
     event.preventDefault();
     setIsShown(false);
@@ -33,50 +32,57 @@ const BPMNContainer = (props) => {
     let statusType;
     setSelectedValue(selectedValue);
     setIsShown(false);
-    switch(selectedValue){
+    switch (selectedValue) {
       case "Commit":
-        statusType="commit";
+        statusType = "commit";
         // setColor('green');
         break;
-        case "Change":
-          statusType="changed";
+      case "Change":
+        statusType = "changed";
         // setColor('orange');
 
-// creatEntity("bpmnFile", JSON.stringify(formData));
+        // creatEntity("bpmnFile", JSON.stringify(formData));
         //console.log(formData);
         break;
-        case "Close":
-          statusType="closed";
+      case "Close":
+        statusType = "closed";
         // setColor('DarkSlateGray');
         break;
-        default:
-          deleteBpmn("https://neotutum.nw.r.appspot.com/bpmnFile/"+props.bpmnFile.id);
-
+      default:
+        deleteBpmn(
+          "https://neotutum.nw.r.appspot.com/bpmnFile/" + props.bpmnFile.id
+        );
     }
 
-    
-    if(statusType==="commit" && localGlobalContext.bpmnUpdate===""){
-      updateBpmn("https://neotutum.nw.r.appspot.com/bpmnFile/"+localGlobalContext.bpmnXML.id,JSON.stringify({status:"commit"}));
-      return ;
+    if (statusType === "commit" && localGlobalContext.bpmnUpdate === "") {
+      updateBpmn(
+        "https://neotutum.nw.r.appspot.com/bpmnFile/" +
+          localGlobalContext.bpmnXML.id,
+        JSON.stringify({ status: "commit" })
+      );
+      return;
     }
     const updatedContent = localGlobalContext.bpmnUpdate;
-    const fullObject = prepareBPMN(updatedContent,"string");
-     const formData = {
+    const fullObject = prepareBPMN(updatedContent, "string");
+    const formData = {
       fileName: localGlobalContext.bpmnXML.fileName,
       fileData: localGlobalContext.bpmnUpdate,
       platformId: localGlobalContext.bpmnXML.platformId,
       creatorId: 1,
-      status: statusType
+      status: statusType,
     };
 
     for (const [key, value] of Object.entries(fullObject)) {
       formData[key] = value.length > 0 ? value.flat() : [];
     }
-    updateBpmn("https://neotutum.nw.r.appspot.com/bpmnFile/"+localGlobalContext.bpmnXML.id,JSON.stringify(formData));
-    
+    updateBpmn(
+      "https://neotutum.nw.r.appspot.com/bpmnFile/" +
+        localGlobalContext.bpmnXML.id,
+      JSON.stringify(formData)
+    );
   };
 
-  const updateBpmn = async (url,formdata) =>{
+  const updateBpmn = async (url, formdata) => {
     try {
       const response = await fetch(url, {
         method: "put",
@@ -88,9 +94,9 @@ const BPMNContainer = (props) => {
       console.log(response);
       if (response.ok) {
         const { data, msg } = await response.json();
-        console.log(data,msg);
+        console.log(data, msg);
         try {
-          const response = await fetch(url + "portfolios", {
+          const response = await fetch(urlOriginal + "portfolios", {
             Methode: "get",
             headers: {
               "Content-Type": "application/json",
@@ -98,18 +104,18 @@ const BPMNContainer = (props) => {
           });
           if (response.ok) {
             const { data, msg } = await response.json();
+            localGlobalContext.setGlobalPortfolios(data);
           }
         } catch (error) {
           console.log(error);
-
         }
       }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  const deleteBpmn = async (url)=>{
+  const deleteBpmn = async (url) => {
     try {
       const response = await fetch(url, {
         method: "delete",
@@ -120,9 +126,9 @@ const BPMNContainer = (props) => {
       console.log(response);
       if (response.ok) {
         const { data, msg } = await response.json();
-        console.log(data,msg);
+        console.log(data, msg);
         try {
-          const response = await fetch(url + "portfolios", {
+          const response = await fetch(urlOriginal + "portfolios", {
             Methode: "get",
             headers: {
               "Content-Type": "application/json",
@@ -130,26 +136,50 @@ const BPMNContainer = (props) => {
           });
           if (response.ok) {
             const { data, msg } = await response.json();
+            localGlobalContext.setGlobalPortfolios(data);
           }
         } catch (error) {
           console.log(error);
-
         }
       }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
   const handleBPMNClick = () => {
     setBpmnXML(props.bpmnFile);
     console.log(props.bpmnFile.fileData);
     // xmlDataDiv.current.innerText=props.bpmnFile.fileData;
   };
-  
+  let color;
+  switch (props.bpmnFile.status) {
+    case "commit":
+      color = "green";
+      break;
+    case "changed":
+      color = "orange";
+      break;
+    case "archive":
+      color = "#2F4F4F";
+      break;
+    case "close":
+      color = "Brown";
+      break;
+
+    default:
+      color = "white";
+  }
   return (
     <div>
-      <ul style={{ listStyleType: "square",color:color }} className="left-margin">
-        <li className="explorer-li" onContextMenu={showContextMenu} onClick={handleBPMNClick}>
+      <ul
+        style={{ listStyleType: "square", color: color }}
+        className="left-margin"
+      >
+        <li
+          className="explorer-li"
+          onContextMenu={showContextMenu}
+          onClick={handleBPMNClick}
+        >
           {props.bpmnFile.fileName}
         </li>
       </ul>
